@@ -1,32 +1,21 @@
 function [water_aver,dwater_aver]=Aver_water_abundance()
-    [x,y,total]=xlsread('??????????????');
-    %[a,b]=size(total);
-    fs={'year';'area';'date';'season';'abundance'};
-    water_struct=cell2struct(total,fs,2);
-    Year=(2000:2014);
-    Area={'????';'????';'10';'9';'8';'7';'????';'6,';'5';'4';'3';'2';'1';'??????'};
-    Season={'??';'??';'??';'??'};
+    load('gujuan_data.mat');
+    Year_count=2000:2014;
+    Area_str={'Shijiu','Chaohu','10','9','8','7','Longgan','6','5','4','3','2','1','Dongdongting'};
+    Season_str={'Spring','Summer','Fall','Winter'};
     water_aver=zeros(4,15,14);
-
-
-    [n,m]=size(water_struct);
-    x=1;y=1;
-    Static=ones(4*15*14,100);
-    index=1;
-
+    
     for b=1:4
-        for a=2000:2014
+        season_bool = strcmp(Season_str(b),Season);
+        for a=1:15
+            year_bool = Year_count(a) == Year;
             for c=1:14
-                for i=1:n
-                    j=1;
-                    if(water_struct(i).year==a&strcmp(water_struct(i).area,Area(c))&strcmp(water_struct(i).season,Season(b)))
-                        Static(index,j)=water_struct(i).abundance;
-                        j=j+1;
-                    end
+                area_bool = strcmp(Area_str(c),Area);
+                Static = WI(logical(season_bool.*year_bool.*area_bool));
+                sort(Static);
+                if length(Static)>=5
+                    water_aver(b,a,c)=sum(Static(1:5))/5.0;
                 end
-                sort(Static(index,:));
-                water_aver(b,a-1999,c)=( Static(index,1)+ Static(index,2)+ Static(index,3)+ Static(index,4)+Static(index,5))/5.0;
-                index=index+1;
             end
         end
     end
