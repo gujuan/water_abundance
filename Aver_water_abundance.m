@@ -12,7 +12,7 @@ function [water_aver,dwater_aver]=Aver_water_abundance()
             for c=1:14
                 area_bool = strcmp(Area_str(c),Area);
                 Static = WI(logical(season_bool.*year_bool.*area_bool));
-                sort(Static);
+                Static=sort(Static);
                 if length(Static)>=5
                     water_aver(b,a,c)=sum(Static(1:5))/5.0;
                 end
